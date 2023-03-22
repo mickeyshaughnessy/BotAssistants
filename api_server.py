@@ -12,7 +12,7 @@ import json
 import redis
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import handlers
+#import handlers
 
 redis = redis.StrictRedis()
 
@@ -23,10 +23,14 @@ CORS(app)
 def ping():
     return json.dumps({"message" : "ok"})
 
-@app.route("/chat", methods=['POST'])
+@app.route("/chat", methods=['POST','GET'])
 def chat():
-    req = request.get_json()
-    resp = handlers.chat(req)
+    try:
+        req = request.get_json()
+    except:
+        pass
+    #resp = handlers.chat(req)
+    resp = json.dumps({"message" : "ok chat"}) 
     return resp
 
 if __name__ == '__main__':
