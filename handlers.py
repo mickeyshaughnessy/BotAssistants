@@ -6,7 +6,7 @@ from prompts import coach as _coach
 def chat(req):
 
     #chat_history = get_history(request)
-    username, _input = req.get('username', 'No user'), req.get('input', "Football is")
+    username, _input = req.get('username', 'No user'), req.get('input',"")
 
     data={
         "prompt" : 
