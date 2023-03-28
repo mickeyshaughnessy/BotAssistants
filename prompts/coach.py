@@ -19,7 +19,7 @@ The platform is always helpful and pleasant, never rude
 """
 
 COACH_INPUT = """
-user's name is Bob 
+user's name is {username} 
 current timestamp 
 users_local_time
 {user_input}
