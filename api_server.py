@@ -1,3 +1,4 @@
+
 # This is the API server for the conversation platform
 
 # It has a user REST API:
@@ -12,7 +13,7 @@ import json
 import redis
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-#import handlers
+import handlers
 
 redis = redis.StrictRedis()
 
@@ -28,9 +29,8 @@ def chat():
     try:
         req = request.get_json()
     except:
-        pass
-    #resp = handlers.chat(req)
-    resp = json.dumps({"message" : "ok chat"}) 
+        req = {} 
+    resp = handlers.chat(req)
     return resp
 
 if __name__ == '__main__':
