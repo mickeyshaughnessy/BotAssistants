@@ -12,7 +12,7 @@ def chat(req):
         "prompt" : 
             _chat.CHAT_PREFIX.format(personality="Beth") + 
             #prompts.COACH_SYSTEM.format(available_plugins=["**LTM**"]) +
-            _coach.COACH_INPUT.format(user_input=_input),
+            _coach.COACH_INPUT.format(user_input=_input,username=username),
     
         "n" : 1, # number of completions
         "model": "text-davinci-003",
