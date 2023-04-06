@@ -1,7 +1,32 @@
-import requests
-import config
+import requests, redis, time, json
+import config, utils, uuid
 from prompts import chat as _chat
 from prompts import coach as _coach 
+
+redis = redis.StrictRedis()
+
+def conversation(req):
+    """ you can append or get conversations"""
+    username = req.get('username',"")
+    user_id = utils.username_to_user_id(username)
+    conversation_id = str(uuid.uuid4())
+    redis.hset(config.REDHASH_CONVERSATIONS, conversation_id, "{}")
+    return conversation_id
+
+def user(req):
+    username = req.get('username',"")
+    user_id = utils.username_to_user_id(username)
+    
+    try:
+        record = json.loads(redis.hget(config.REDHASH_USERS, user_id))
+    except Exception as e:
+        record = {"created_on":"%s" % int(time.time())}
+    
+    mod = req.get('modification',{})
+    if mod: record.update(mod)
+     
+    redis.hset(config.REDHASH_USERS, user_id, json.dumps(record)) 
+    return {} 
 
 def chat(req):
 

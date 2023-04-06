@@ -9,11 +9,10 @@
 #    "text" : <params_json>
 #    }
 
-import json
-import redis
+import json, uuid, redis
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import handlers
+import utils, handlers, config
 
 redis = redis.StrictRedis()
 
@@ -24,17 +23,19 @@ CORS(app)
 def ping():
     return json.dumps({"message" : "ok"})
 
-@app.route("/create", methods=['POST', 'GET'])
-def create():
+@app.route("/conversation", methods=['POST', 'GET'])
+def conversation():
     req = request.get_json()
+    resp = handlers.conversation(req)
     return {}
 
-@app.route("/edit", methods=['POST', 'GET'])
-def edit():
+@app.route("/user", methods=['POST', 'GET'])
+def user():
     req = request.get_json()
+    resp = handlers.user(req)
     return {}
 
-@app.route("/reporting", methods=['POST', 'GET'])
+@app.route("/reporting", methods=['POST'])
 def reporting():
     req = request.get_json()
     return {}
