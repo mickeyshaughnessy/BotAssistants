@@ -24,6 +24,21 @@ CORS(app)
 def ping():
     return json.dumps({"message" : "ok"})
 
+@app.route("/create", methods=['POST', 'GET'])
+def create():
+    req = request.get_json()
+    return {}
+
+@app.route("/edit", methods=['POST', 'GET'])
+def edit():
+    req = request.get_json()
+    return {}
+
+@app.route("/reporting", methods=['POST', 'GET'])
+def reporting():
+    req = request.get_json()
+    return {}
+
 @app.route("/chat", methods=['POST','GET'])
 def chat():
     try:
