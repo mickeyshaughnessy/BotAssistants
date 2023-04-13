@@ -31,7 +31,7 @@ def user(req):
 def chat(req):
 
     #chat_history = get_history(request)
-    username, _input = req.get('username', 'No user'), req.get('input',"")
+    username, _input = req.get('username', 'No user'), req.get('text',"")
 
     data={
         "prompt" : 
