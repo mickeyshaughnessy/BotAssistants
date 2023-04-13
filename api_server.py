@@ -29,12 +29,6 @@ def conversation():
     resp = handlers.conversation(req)
     return {}
 
-@app.route("/user", methods=['POST', 'GET'])
-def user():
-    req = request.get_json()
-    resp = handlers.user(req)
-    return {}
-
 @app.route("/reporting", methods=['POST'])
 def reporting():
     req = request.get_json()

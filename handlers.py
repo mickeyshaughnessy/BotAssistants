@@ -5,39 +5,49 @@ from prompts import coach as _coach
 
 redis = redis.StrictRedis()
 
+def login(req):
+    token = str(uuid.uuid4())
+    return {'user_id':'', 'token':token}
+
 def conversation(req):
+    ## create, update, or fetch a conversation ##
+    ## the idea is users have privileges to do operations on conversations
+
     """ you can append or get conversations"""
-    username = req.get('username',"")
-    user_id = utils.username_to_user_id(username)
+    user_id = req.get('user_id',"")
+    user_id = utils.user_id_to_user_id(user_id)
+    
+    ## This only works for new conversations below ##
     conversation_id = str(uuid.uuid4())
     redis.hset(config.REDHASH_CONVERSATIONS, conversation_id, "{}")
     return conversation_id
 
-def user(req):
-    username = req.get('username',"")
-    user_id = utils.username_to_user_id(username)
-    
-    try:
-        record = json.loads(redis.hget(config.REDHASH_USERS, user_id))
-    except Exception as e:
-        record = {"created_on":"%s" % int(time.time())}
-    
-    mod = req.get('modification',{})
-    if mod: record.update(mod)
-     
-    redis.hset(config.REDHASH_USERS, user_id, json.dumps(record)) 
-    return {} 
+#def user(req):
+#    user_id = req.get('user_id',"")
+#    user_id = utils.user_id_to_user_id(user_id)
+#    
+#    try:
+#        record = json.loads(redis.hget(config.REDHASH_USERS, user_id))
+#    except Exception as e:
+#        record = {"created_on":"%s" % int(time.time())}
+#    
+#    mod = req.get('modification',{})
+#    if mod: record.update(mod)
+#     
+#    redis.hset(config.REDHASH_USERS, user_id, json.dumps(record)) 
+#    return {} 
 
 def chat(req):
 
     #chat_history = get_history(request)
-    username, _input = req.get('username', 'No user'), req.get('text',"")
+
+    user_id, _input = req.get('user_id', 'No user_id'), req.get('text',"")
 
     data={
         "prompt" : 
             _chat.CHAT_PREFIX.format(personality="Beth") + 
             #prompts.COACH_SYSTEM.format(available_plugins=["**LTM**"]) +
-            _coach.COACH_INPUT.format(user_input=_input,username=username),
+            _coach.COACH_INPUT.format(user_input=_input,user_id=user_id),
     
         "n" : 1, # number of completions
         "model": "text-davinci-003",
