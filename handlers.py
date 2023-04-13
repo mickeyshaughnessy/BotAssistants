@@ -17,7 +17,7 @@ def conversation(req):
     user_id = req.get('user_id',"")
     user_id = utils.user_id_to_user_id(user_id)
     
-    ## This only works for new conversations below ##
+    ## create ## 
     conversation_id = str(uuid.uuid4())
     redis.hset(config.REDHASH_CONVERSATIONS, conversation_id, "{}")
     return conversation_id
