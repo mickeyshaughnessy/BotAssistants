@@ -35,7 +35,7 @@ Thought: Are any plugins needed? No
 """
 
 COACH_INPUT = """
-user's name is {username} 
+user's id is {user_id} 
 current timestamp 
 users_local_time
 {user_input}
