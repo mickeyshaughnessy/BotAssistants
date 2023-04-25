@@ -1,4 +1,4 @@
-import requests, redis, time, json
+import requests, redis, time, json, random
 import config, utils, uuid
 from prompts import chat as _chat
 from prompts import coach as _coach 
@@ -11,7 +11,7 @@ def login(req):
     return {'user_id':'', 'token':token}
 
 def authenticate(action, user, conversation):
-    pass
+    return random.choice([True, False])
  
 def manage(req):
     user_id = req.get('user_id')
@@ -19,6 +19,11 @@ def manage(req):
     user, conversation =  models.User(user_id), models.Conversation(conversation)
     action = req.get('action') # action is json object describing the action (modifiying conversation, modifying user data)
     authed = authenticate(action, user, conversation)
+    if authed:
+         resp = apply(action, user, conversation)
+         return resp
+    else:
+         return f'{"message" : "user {user_id} not authenticated to perform {action} on conversation {conversation_id"}'
 
 def chat(req):
 
