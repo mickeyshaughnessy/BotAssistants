@@ -1,8 +1,11 @@
 import sys, requests, json
 
 url = sys.argv[1]
-body = json.loads(sys.argv[2])
+if len(sys.argv > 1):
+    params = json.loads(sys.argv[2])
+else:
+    params = {}
 
-resp = requests.post(url, json=body)
+resp = requests.get(url, params=params)
 
 print json.loads(resp.json())

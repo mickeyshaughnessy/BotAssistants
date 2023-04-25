@@ -2,12 +2,19 @@ import requests, redis, time, json
 import config, utils, uuid
 from prompts import chat as _chat
 from prompts import coach as _coach 
+from models import User, Conversation
 
 redis = redis.StrictRedis()
 
 def login(req):
     token = str(uuid.uuid4())
     return {'user_id':'', 'token':token}
+
+def manage(req):
+    user_id = req.get('user_id')
+    conversation_id = req.get('conversation_id')
+    is user_id:
+        user = User(user_id)
 
 def conversation(req):
     ## create, update, or fetch a conversation ##
@@ -22,20 +29,6 @@ def conversation(req):
     redis.hset(config.REDHASH_CONVERSATIONS, conversation_id, "{}")
     return conversation_id
 
-#def user(req):
-#    user_id = req.get('user_id',"")
-#    user_id = utils.user_id_to_user_id(user_id)
-#    
-#    try:
-#        record = json.loads(redis.hget(config.REDHASH_USERS, user_id))
-#    except Exception as e:
-#        record = {"created_on":"%s" % int(time.time())}
-#    
-#    mod = req.get('modification',{})
-#    if mod: record.update(mod)
-#     
-#    redis.hset(config.REDHASH_USERS, user_id, json.dumps(record)) 
-#    return {} 
 
 def chat(req):
 

@@ -23,14 +23,15 @@ CORS(app)
 def ping():
     return json.dumps({"message" : "ok"})
 
-@app.route("/conversation", methods=['POST', 'GET'])
-def conversation():
+@app.route("/manage", methods=['POST'])
+def manage(): 
     req = request.get_json()
-    resp = handlers.conversation(req)
+    resp = handlers.manage(req) 
     return {}
 
 @app.route("/reporting", methods=['POST'])
 def reporting():
+    # implement this
     req = request.get_json()
     return {}
 
