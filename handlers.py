@@ -10,25 +10,15 @@ def login(req):
     token = str(uuid.uuid4())
     return {'user_id':'', 'token':token}
 
+def authenticate(action, user, conversation):
+    pass
+ 
 def manage(req):
     user_id = req.get('user_id')
     conversation_id = req.get('conversation_id')
-    is user_id:
-        user = User(user_id)
-
-def conversation(req):
-    ## create, update, or fetch a conversation ##
-    ## the idea is users have privileges to do operations on conversations
-
-    """ you can append or get conversations"""
-    user_id = req.get('user_id',"")
-    user_id = utils.user_id_to_user_id(user_id)
-    
-    ## create ## 
-    conversation_id = str(uuid.uuid4())
-    redis.hset(config.REDHASH_CONVERSATIONS, conversation_id, "{}")
-    return conversation_id
-
+    user, conversation =  models.User(user_id), models.Conversation(conversation)
+    action = req.get('action') # action is json object describing the action (modifiying conversation, modifying user data)
+    authed = authenticate(action, user, conversation)
 
 def chat(req):
 
