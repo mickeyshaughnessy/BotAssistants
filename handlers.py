@@ -1,7 +1,9 @@
 import requests, redis, time, json
-import config, utils, uuid
+import config, uuid
 from prompts import chat as _chat
 from prompts import coach as _coach 
+import utils
+
 
 redis = redis.StrictRedis()
 
@@ -15,7 +17,7 @@ def conversation(req):
 
     """ you can append or get conversations"""
     user_id = req.get('user_id',"")
-    user_id = utils.user_id_to_user_id(user_id)
+    #user_id = utils.user_id_to_user_id(user_id)
     
     ## create ## 
     conversation_id = str(uuid.uuid4())
@@ -39,13 +41,19 @@ def conversation(req):
 
 def chat(req):
 
-    #chat_history = get_history(request)
+    # first thing, we get the conversation id.
+    conversation_id = req.get("conversation_id", int(uuid.uuid4()))
+    # if no id, then make one.
+
+    chat_history = utils.get_history(conversation_id)
+    transcript = chat_history.get('transcript', "")
 
     user_id, _input = req.get('user_id', 'No user_id'), req.get('text',"")
 
     data={
         "prompt" : 
             _chat.CHAT_PREFIX.format(personality="Beth") + 
+            _chat.CHAT_BODY.format(transcript=transcript)
             #prompts.COACH_SYSTEM.format(available_plugins=["**LTM**"]) +
             _coach.COACH_INPUT.format(user_input=_input,user_id=user_id),
     

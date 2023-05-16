@@ -1,4 +1,4 @@
-import requests
+import requests, time
 
 user_id = '123'
 
@@ -8,3 +8,4 @@ while True:
     #resp = requests.post("http://3.89.10.143:8010/chat", json={"text" : chat, "user_id":user_id})
     resp = requests.post("http://0.0.0.0:8010/chat", json={"text" : chat, "user_id":user_id})
     print(resp.text)
+    time.sleep(1)
