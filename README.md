@@ -13,15 +13,5 @@ This is a platform for conversations
   4. Unprompted conversations
   5. Fine-tuned to be helpful with the recovery process & support the human coach
     
------------
-## Property Management
-
-  Typical use case: How can I get my child enrolled in free school lunches?
-    
-  Features:
-  1. Conversation management (create, reporting (summary data), privacy)
-  5. Fine tuned for information lookup / no hallucination
-  2. Long term memory
-  3. Multi-participant conversations
-  4. Unprompted conversations
-    
+   
+  Next time - 1. new user flow and 2. web client 
