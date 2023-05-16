@@ -1,4 +1,4 @@
-import redis, config, hashlib
+import json, redis, config, hashlib
 
 redis = redis.StrictRedis()
 
@@ -14,16 +14,14 @@ def get_history(conversation_id):
         history = {}
     return history
 
-def update_history(update, user_id, conversation_id):
+def update_transcript(conversation_id, update):
     # when a client connects it creates or loads a conversation
     history = redis.hget(config.REDHASH_CONVERSATION, "conversation_%s" % conversation_id)
     if history:
         history = json.loads(history)
     else:
-        history = {"users" : [user_id], "transcript" : ""}
+        history = {"users" : [], "transcript" : ""}
 
-
-    history['transcript'] += "User_%s" % user_id + update.get('input')
-    history.update(update)
+    history['transcript'] += update 
     history = json.dumps(history)
     redis.hset(config.REDHASH_CONVERSATION, "conversation_%s" % conversation_id, history)

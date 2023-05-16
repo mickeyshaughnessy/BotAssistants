@@ -48,14 +48,16 @@ def chat(req):
     chat_history = utils.get_history(conversation_id)
     transcript = chat_history.get('transcript', "")
 
-    user_id, _input = req.get('user_id', 'No user_id'), req.get('text',"")
+    _id, _input = req.get('user_id', 'No user_id'), req.get('text',"")
+
+    _personality="Sober Coach"
 
     data={
         "prompt" : 
-            _chat.CHAT_PREFIX.format(personality="Beth") + 
-            _chat.CHAT_BODY.format(transcript=transcript)
+            _chat.CHAT_PREFIX.format(personality=_personality) + 
+            _chat.CHAT_BODY.format(transcript=transcript) +
             #prompts.COACH_SYSTEM.format(available_plugins=["**LTM**"]) +
-            _coach.COACH_INPUT.format(user_input=_input,user_id=user_id),
+            _chat.CHAT_SUFFIX.format(user_input=_input, user_id=_id, personality=_personality),
     
         "n" : 1, # number of completions
         "model": "text-davinci-003",
@@ -67,7 +69,13 @@ def chat(req):
 
     headers = {"Authorization": "Bearer %s" % config.openai_api_key, "Content-Type" : "application/json"}
     full_resp = requests.post(config.openai_url, headers=headers, json=data)
-    print(full_resp)
+    #print(full_resp)
     _resp = full_resp.json().get("choices", [])[0].get('text')
+    utils.update_transcript(conversation_id, _chat.CHAT_UPDATE.format(
+        user_input=_input,
+        user_id=_id,
+        personality=_personality,
+        response=_resp
+        )) 
     print(_resp)
     return _resp
