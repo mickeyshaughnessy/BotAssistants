@@ -2,21 +2,34 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Chat with the Machine</title>
+    <title>Recovery Chat</title>
     <style>
       /* CSS styles for the chat window */
       #chat-window {
-        width: 400px;
-        height: 400px;
-        border: 1px solid black;
-        overflow: auto;
-        padding: 10px;
+          width: 50%;
+          height: 400px;
+          border: 1px solid black;
+          overflow: auto;
+          padding: 10px;
+          float: left;
+          box-sizing: border-box;  /* To include padding and border in element's width */
       }
-
+      
+      /* CSS styles for the disclaimer box */
+      #disclaimer {
+          width: 50%;
+          height: 400px;
+          border: 1px solid black;
+          padding: 10px;
+          float: left;
+          box-sizing: border-box;  /* To include padding and border in element's width */
+      }
+      
       /* CSS styles for the input form */
       #input-form {
-        display: flex;
-        margin-top: 10px;
+          display: flex;
+          margin-top: 10px;
+          clear: both;
       }
 
       #input-form input[type="text"] {
@@ -35,15 +48,48 @@
       #input-form input[type="submit"]:hover {
         background-color: #3e8e41;
       }
+
+      /* CSS styles for the buttons */
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 10px 2px;
+        font-size: 16px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        outline: none;
+        color: #fff;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 9px #999;
+      }
+
+      .button:hover {background-color: #3e8e41}
+
+      .button:active {
+        background-color: #3e8e41;
+        box-shadow: 0 5px #666;
+        transform: translateY(4px);
+      }
     </style>
   </head>
   <body>
     <h1>Sober Coach AI</h1>
     <div id="chat-window"></div>
+    <div id="disclaimer">
+      <h2>Disclaimer</h2>
+      <p>Please be aware this is a prototype demonstration of an artificial intelligence system. Use at your own risk - it is not intended to give medical or legal advice. AI systems are known to make up information.</p>
+    </div>
     <form id="input-form">
       <input type="text" id="input-text" placeholder="Type your message here...">
       <input type="submit" value="Send">
     </form>
+    <button class="button" id="new-conversation">New Conversation</button>
+    <button class="button" id="load-conversation">Load Conversation</button>
+    <button class="button" id="login">Login</button>
+    <button class="button" id="settings">Settings</button>
 
     <script>
       // JavaScript code for the chat window
@@ -52,6 +98,8 @@
       const chatWindow = document.getElementById("chat-window");
       const inputForm = document.getElementById("input-form");
       const inputText = document.getElementById("input-text");
+
+      // TODO: Get references to the buttons and add event listeners
 
       let username = null; // Initialize the username as null
 
@@ -84,27 +132,33 @@
         addMessageToChatWindow(message, senderName);
 
         // Send the user's message to the chat endpoint
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", window.location.origin + "/chat");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            // Get the bot's response and username
-            const data = JSON.parse(xhr.responseText);
-            const response = data.response;
-            username = data.username; // Update the username
+        // ...
+        // Existing code for sending the user's message to the chat endpoint
+        // ...
+      });
 
-            // Add the bot's response to the chat window
-            addBotResponseToChatWindow(response);
-          } else {
-            console.error("Request failed. Status code:", xhr.status);
-          }
-        };
-        xhr.onerror = function() {
-          console.error("Request failed. Network error.");
-        };
-        xhr.send(JSON.stringify({ text: message, username: username }));
+      // Event listeners for the buttons
+      const newConversationButton = document.getElementById("new-conversation");
+      const loadConversationButton = document.getElementById("load-conversation");
+      const loginButton = document.getElementById("login");
+      const settingsButton = document.getElementById("settings");
+
+      newConversationButton.addEventListener("click", function() {
+        // TODO: Implement functionality for starting a new conversation
+      });
+
+      loadConversationButton.addEventListener("click", function() {
+        // TODO: Implement functionality for loading a conversation
+      });
+
+      loginButton.addEventListener("click", function() {
+        // TODO: Implement functionality for logging in
+      });
+
+      settingsButton.addEventListener("click", function() {
+        // TODO: Implement functionality for settings
       });
     </script>
   </body>
 </html>
+
