@@ -56,7 +56,7 @@ def chat(req):
         "prompt" : 
             _chat.CHAT_PREFIX.format(personality=_personality) + 
             _chat.CHAT_BODY.format(transcript=transcript) +
-            _prompts.COACH_SYSTEM +
+            _coach.COACH_SYSTEM +
             _chat.CHAT_SUFFIX.format(user_input=_input, user_id=_id, personality=_personality),
     
         "n" : 1, # number of completions
