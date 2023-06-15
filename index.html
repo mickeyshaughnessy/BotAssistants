@@ -6,81 +6,62 @@
     <style>
       /* CSS styles for the chat window */
       #chat-window {
-          width: 50%;
+          width: 30%;
           height: 400px;
           border: 1px solid black;
           overflow: auto;
           padding: 10px;
           float: left;
-          box-sizing: border-box;  /* To include padding and border in element's width */
+          box-sizing: border-box;
       }
       
-      /* CSS styles for the disclaimer box */
-      #disclaimer {
-          width: 50%;
+      /* CSS styles for the conversation menu */
+      #conversation-menu {
+          width: 30%;
           height: 400px;
           border: 1px solid black;
+          overflow: auto;
           padding: 10px;
           float: left;
-          box-sizing: border-box;  /* To include padding and border in element's width */
+          box-sizing: border-box;
       }
       
-      /* CSS styles for the input form */
-      #input-form {
-          display: flex;
-          margin-top: 10px;
+      /* CSS styles for the bot menu */
+      #bot-menu {
+          width: 30%;
+          height: 400px;
+          border: 1px solid black;
+          overflow: auto;
+          padding: 10px;
+          float: left;
+          box-sizing: border-box;
+      }
+
+      /* CSS styles for the disclaimer box */
+      #disclaimer {
+          width: 100%;
+          padding: 10px;
+          box-sizing: border-box;
+          font-size: 0.8em;
+          color: grey;
+          text-align: center;
           clear: both;
       }
 
-      #input-form input[type="text"] {
-        flex: 1;
-        margin-right: 10px;
-      }
+      /* Rest of your styles... */
 
-      #input-form input[type="submit"] {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 10px;
-        cursor: pointer;
-      }
-
-      #input-form input[type="submit"]:hover {
-        background-color: #3e8e41;
-      }
-
-      /* CSS styles for the buttons */
-      .button {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 10px 2px;
-        font-size: 16px;
-        cursor: pointer;
-        text-align: center;
-        text-decoration: none;
-        outline: none;
-        color: #fff;
-        background-color: #4CAF50;
-        border: none;
-        border-radius: 15px;
-        box-shadow: 0 9px #999;
-      }
-
-      .button:hover {background-color: #3e8e41}
-
-      .button:active {
-        background-color: #3e8e41;
-        box-shadow: 0 5px #666;
-        transform: translateY(4px);
-      }
     </style>
   </head>
   <body>
     <h1>Sober Coach AI</h1>
     <div id="chat-window"></div>
-    <div id="disclaimer">
-      <h2>Disclaimer</h2>
-      <p>Please be aware this is a prototype demonstration of an artificial intelligence system. Use at your own risk - it is not intended to give medical or legal advice. AI systems are known to make up information.</p>
+    <div id="conversation-menu">
+      <h2>Available Conversations</h2>
+      <!-- List your conversations here -->
+    </div>
+    <div id="bot-menu">
+      <h2>Available Bots</h2>
+      <!-- List your bots here -->
     </div>
     <form id="input-form">
       <input type="text" id="input-text" placeholder="Type your message here...">
@@ -90,6 +71,10 @@
     <button class="button" id="load-conversation">Load Conversation</button>
     <button class="button" id="login">Login</button>
     <button class="button" id="settings">Settings</button>
+    <div id="disclaimer">
+      <p>Please be aware this is a prototype demonstration of an artificial intelligence system. Use at your own risk - it is not intended to give medical or legal advice. AI systems are known to make up information.</p>
+    </div>
+
 
     <script>
       // JavaScript code for the chat window
@@ -183,4 +168,5 @@
     </script>
   </body>
 </html>
+
 
