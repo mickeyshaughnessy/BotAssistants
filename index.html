@@ -91,9 +91,21 @@
     <button class="button" id="login">Login</button>
     <button class="button" id="settings">Settings</button>
 
+    <dialog id="login-dialog">
+      <form id="login-form" method="dialog">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+        <label for="passphrase">Passphrase:</label>
+        <input type="password" id="passphrase" name="passphrase">
+        <input type="submit" value="Login">
+        <button id="close-button">Close</button>
+      </form>
+    </dialog>
+
+
+
     <script>
       // JavaScript code for the chat window
-
       // Get references to DOM elements
       const chatWindow = document.getElementById("chat-window");
       const inputForm = document.getElementById("input-form");
@@ -176,6 +188,43 @@
       loadConversationButton.addEventListener("click", function() {
         // TODO: Implement functionality for loading a conversation
       });
+
+      loginButton.addEventListener("click", function() {
+      // Create login modal
+      const loginModal = document.createElement('div');
+      loginModal.innerHTML = `
+        <div id="login-dialog" style="display: none;">
+          <form id="login-form">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="passphrase">Passphrase:</label><br>
+            <input type="text" id="passphrase" name="passphrase"><br>
+            <input type="submit" value="Login">
+          </form>
+        </div>
+      `;
+      document.body.appendChild(loginModal);
+    
+      // Show login modal
+      const loginDialog = document.getElementById("login-dialog");
+      loginDialog.style.display = 'block';
+    
+      const loginForm = document.getElementById("login-form");
+    
+      loginForm.addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+    
+        // Get the user's credentials
+        const username = document.getElementById('username').value;
+        const passphrase = document.getElementById('passphrase').value;
+    
+        // For testing, simply alert the username and passphrase
+        alert(`Username: ${username}\nPassphrase: ${passphrase}`);
+    
+        // TODO: Implement actual login request to the server
+      });
+    });
+ 
 
       loginButton.addEventListener("click", function() {
         // TODO: Implement functionality for logging in
