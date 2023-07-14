@@ -102,6 +102,8 @@
       // TODO: Get references to the buttons and add event listeners
 
       let username = null; // Initialize the username as null
+      let conversation_id = null; // Initialize the conversation_id as null
+
 
       // Function to add a message to the chat window
       function addMessageToChatWindow(message, sender) {
@@ -119,45 +121,47 @@
 
       // Event listener for form submission
       inputForm.addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent the form from submitting normally
-
-        // Get the user's message
-        const message = inputText.value;
-
-        // Clear the input field
-        inputText.value = "";
-
-        // Add the user's message to the chat window
-        const senderName = username ? username : "User";
-        addMessageToChatWindow(message, senderName);
-
-        // Send the user's message to the chat endpoint
-        const xhr = new XMLHttpRequest();
-        //xhr.open("POST", window.location.origin + "/chat");
-        xhr.open("POST", window.location.protocol + "//" + window.location.hostname + "/chat");
-        xhr.setRequestHeader("Content-Type", "application/json");
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            // Get the bot's response and username
-            const data = JSON.parse(xhr.responseText);
-            const response = data.response;
-            username = data.username; // Update the username
-
-            // Add the bot's response to the chat window
-            addBotResponseToChatWindow(response);
-          } else {
-            console.error("Request failed. Status code:", xhr.status);
-          }
-        };
-        xhr.onerror = function() {
-          console.error("Request failed. Network error.");
-        };
-        xhr.send(JSON.stringify({ text: message, username: username }));
-        // Send the user's message to the chat endpoint
-        // ...
-        // Existing code for sending the user's message to the chat endpoint
-        // ...
+          event.preventDefault(); // Prevent the form from submitting normally
+      
+          // Get the user's message
+          const message = inputText.value;
+      
+          // Clear the input field
+          inputText.value = "";
+      
+          // Add the user's message to the chat window
+          const senderName = username ? username : "User";
+          addMessageToChatWindow(message, senderName);
+      
+          // Send the user's message to the chat endpoint
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", window.location.protocol + "//" + window.location.hostname + "/chat");
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.onload = function() {
+              if (xhr.status === 200) {
+                  // Get the bot's response and username
+                  const data = JSON.parse(xhr.responseText);
+                  const response = data.response;
+                  username = data.username; // Update the username
+      
+                  // Check if a conversation_id is returned by the server and update it
+                  if (data.conversation_id) {
+                      conversation_id = data.conversation_id;
+                  }
+      
+                  // Add the bot's response to the chat window
+                  addBotResponseToChatWindow(response);
+              } else {
+                  console.error("Request failed. Status code:", xhr.status);
+              }
+          };
+          xhr.onerror = function() {
+              console.error("Request failed. Network error.");
+          };
+          xhr.send(JSON.stringify({ text: message, username: username, conversation_id: conversation_id }));
       });
+
+
 
       // Event listeners for the buttons
       const newConversationButton = document.getElementById("new-conversation");
