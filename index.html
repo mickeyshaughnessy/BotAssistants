@@ -72,6 +72,34 @@
         background-color: #3e8e41;
         box-shadow: 0 5px #666;
         transform: translateY(4px);
+
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      
+      .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f1f1f1;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+      }
+      
+      .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+      }
+      
+      .dropdown-content a:hover {background-color: #ddd;}
+      
+      .dropdown:hover .dropdown-content {display: block;}
+      
+      .dropdown:hover .dropbtn {background-color: #3e8e41;}
+
       }
     </style>
   </head>
@@ -88,6 +116,12 @@
     </form>
     <button class="button" id="new-conversation">New Conversation</button>
     <button class="button" id="load-conversation">Load Conversation</button>
+    <div class="dropdown">
+      <button class="button dropdown-toggle" id="conversations">Conversations</button>
+      <div class="dropdown-menu" id="conversation-list">
+        <!-- Conversations will be loaded here -->
+      </div>
+    </div>
     <button class="button" id="login">Login/Sign-up</button>
     <button class="button" id="settings">Settings</button>
 
@@ -173,6 +207,45 @@
           xhr.send(JSON.stringify({ text: message, username: username, conversation_id: conversation_id }));
       });
 
+
+      const conversationButton = document.getElementById("conversations");
+      const conversationList = document.getElementById("conversation-list");
+
+      // Function to fetch the list of conversations and add them to the dropdown menu
+      function fetchConversations() {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", window.location.protocol + "//" + window.location.hostname + "/conversations");
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const conversations = JSON.parse(xhr.responseText);
+            for (const conversation of conversations) {
+              const a = document.createElement('a');
+              a.href = "#";
+              a.innerText = conversation.name;
+              a.dataset.id = conversation.id; // Store the conversation id
+              a.addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent the link from redirecting
+                joinConversation(this.dataset.id); // Call a function to join the conversation
+              });
+              conversationList.appendChild(a);
+            }
+          } else {
+            console.error("Request failed. Status code:", xhr.status);
+          }
+        };
+        xhr.onerror = function() {
+          console.error("Request failed. Network error.");
+        };
+        xhr.send();
+      }
+
+      // Function to join a conversation
+      function joinConversation(id) {
+        // TODO: Implement functionality to join a conversation
+      }
+
+      // Fetch the conversations when the conversation button is clicked
+      conversationButton.addEventListener("click", fetchConversations);
 
 
       // Event listeners for the buttons
