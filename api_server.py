@@ -35,6 +35,13 @@ def reporting():
     req = request.get_json()
     return {}
 
+@app.route("/conversations", methods=['POST'])
+def conversations():
+    # implement this
+    req = request.get_json()
+    resp = handler.conversations(req)
+    return resp
+
 @app.route("/chat", methods=['POST','GET'])
 def chat():
     try:

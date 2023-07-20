@@ -11,33 +11,27 @@ def login(req):
     token = str(uuid.uuid4())
     return {'user_id':'', 'token':token}
 
-def conversation(req):
-    ## create, update, or fetch a conversation ##
-    ## the idea is users have privileges to do operations on conversations
-
-    """ you can append or get conversations"""
+def conversations(req):
     user_id = req.get('user_id',"")
-    #user_id = utils.user_id_to_user_id(user_id)
-    
+   
+    action = req.get("action") # one of create, join, share, delete, set_name
+
+    ## share ##
+    ## delete ##
+    ## set_name ##
     ## create ## 
     conversation_id = str(uuid.uuid4())
-    redis.hset(config.REDHASH_CONVERSATIONS, conversation_id, "{}")
+    redis.hset(config.REDHASH_CONVERSATIONS, conversation_id, json.dumps({"conversation_id":conversation_id}))
     return conversation_id
 
-#def user(req):
-#    user_id = req.get('user_id',"")
-#    user_id = utils.user_id_to_user_id(user_id)
-#    
-#    try:
-#        record = json.loads(redis.hget(config.REDHASH_USERS, user_id))
-#    except Exception as e:
-#        record = {"created_on":"%s" % int(time.time())}
-#    
-#    mod = req.get('modification',{})
-#    if mod: record.update(mod)
-#     
-#    redis.hset(config.REDHASH_USERS, user_id, json.dumps(record)) 
-#    return {} 
+    ## join ##
+    conversation_id = req.get("conversation_id","")
+    conversation = redis.hget(config.REDHASH_CONVERSATIONS, conversation_id)
+    if conversation:
+        conversation = json.loads(conversation)
+    else:
+        conversation = {}
+    return conversation
 
 def chat(req):
 
