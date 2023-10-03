@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Chat with Bot</title>
     <style>
-      /* CSS styles for chat and conversation windows */
-      .window {
+      /* CSS styles for the chat window */
+      #chat-window {
           width: 50%;
           height: 400px;
           border: 1px solid black;
@@ -14,7 +14,18 @@
           float: left;
           box-sizing: border-box;  /* To include padding and border in element's width */
       }
-
+      
+      /* CSS styles for the conversations window */
+      #conversations-window {
+        width: 50%;
+        height: 400px;
+        border: 1px solid black;
+        overflow: auto;
+        padding: 10px;
+        float: right;
+        box-sizing: border-box;  /* To include padding and border in element's width */
+      }
+ 
       /* CSS styles for the input form */
       #input-form {
           display: flex;
@@ -39,7 +50,13 @@
         background-color: #3e8e41;
       }
 
-      /* CSS styles for buttons */
+      footer {
+        text-align: center;
+        padding: 10px;
+        font-size: small;
+      }
+
+      /* CSS styes for the buttons */
       .button {
         display: inline-block;
         padding: 10px 20px;
@@ -62,30 +79,60 @@
         background-color: #3e8e41;
         box-shadow: 0 5px #666;
         transform: translateY(4px);
+
+      #conversations-sidebar {
+        width: 200px;
+        height: 400px;
+        border: 1px solid black;
+        padding: 10px;
+        float: left;
+        box-sizing: border-box;
+        overflow: auto;
+      }
+      
+      #conversation-list {
+        list-style-type: none;
+        padding: 0;
+      }
+      
+      #conversation-list li {
+        cursor: pointer;
+        padding: 5px;
+        border-bottom: 1px solid #ddd;
+      }
+      
+      #conversation-list li:hover {
+        background-color: #ddd;
       }
 
-      footer {
-        text-align: center;
-        padding: 10px;
-        font-size: small;
       }
     </style>
   </head>
   <body>
     <h1>Sobriety Coach</h1>
-    <div id="chat-window" class="window"></div>
-    <div id="conversations-window" class="window">
+    <div id="chat-window"></div>
+    <div id="conversations-window">
       <h2>Conversations</h2>
-      <!-- Conversations will be loaded here -->
+      <div id="conversation-list">
+        <!-- Conversations will be loaded here -->
+      </div>
     </div>
+ 
 
     <form id="input-form">
       <input type="text" id="input-text" placeholder="Type your message here...">
       <input type="submit" value="Send">
     </form>
-    <button class="button" id="new-conversation">New Conversation</button>
-    <button class="button" id="login">Login/Sign-up</button>
-    <button class="button" id="settings">Settings</button>
+      <button class="button" id="new-conversation">New Conversation</button>
+      <button class="button" id="load-conversation">Load Conversation</button>
+      <div id="conversations-sidebar">
+        <h2>Conversations</h2>
+        <ul id="conversation-list">
+          <!-- Conversations will be loaded here -->
+        </ul>
+      </div>
+      <button class="button" id="login">Login/Sign-up</button>
+      <button class="button" id="settings">Settings</button>
 
     <dialog id="login-dialog">
       <form id="login-form" method="dialog">
@@ -98,12 +145,180 @@
       </form>
     </dialog>
 
-    <!-- Your JavaScript code can be placed here -->
 
+
+    <script>
+      // JavaScript code for the chat window
+      // Get references to DOM elements
+      const chatWindow = document.getElementById("chat-window");
+      const inputForm = document.getElementById("input-form");
+      const inputText = document.getElementById("input-text");
+
+      // TODO: Get references to the buttons and add event listeners
+
+      let username = null; // Initialize the username as null
+      let conversation_id = null; // Initialize the conversation_id as null
+
+
+      // Function to add a message to the chat window
+      function addMessageToChatWindow(message, sender) {
+        const messageElement = document.createElement("div");
+        messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+        chatWindow.appendChild(messageElement);
+      }
+
+      // Function to add a bot response to the chat window
+      function addBotResponseToChatWindow(response) {
+        const messageElement = document.createElement("div");
+        messageElement.innerHTML = `<strong>Bot:</strong> ${response}`;
+        chatWindow.appendChild(messageElement);
+      }
+
+      // Event listener for form submission
+      inputForm.addEventListener("submit", function(event) {
+          event.preventDefault(); // Prevent the form from submitting normally
+      
+          // Get the user's message
+          const message = inputText.value;
+      
+          // Clear the input field
+          inputText.value = "";
+      
+          // Add the user's message to the chat window
+          const senderName = username ? username : "User";
+          addMessageToChatWindow(message, senderName);
+      
+          // Send the user's message to the chat endpoint
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", window.location.protocol + "//" + window.location.hostname + "/chat");
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.onload = function() {
+              if (xhr.status === 200) {
+                  // Get the bot's response and username
+                  const data = JSON.parse(xhr.responseText);
+                  const response = data.response;
+                  username = data.username; // Update the username
+      
+                  // Check if a conversation_id is returned by the server and update it
+                  if (data.conversation_id) {
+                      conversation_id = data.conversation_id;
+                  }
+      
+                  // Add the bot's response to the chat window
+                  addBotResponseToChatWindow(response);
+              } else {
+                  console.error("Request failed. Status code:", xhr.status);
+              }
+          };
+          xhr.onerror = function() {
+              console.error("Request failed. Network error.");
+          };
+          xhr.send(JSON.stringify({ text: message, username: username, conversation_id: conversation_id }));
+      });
+
+
+      const conversationList = document.getElementById("conversations-window");
+
+      // Function to fetch the list of conversations and add them to the sidebar
+      function fetchConversations() {
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", window.location.protocol + "//" + window.location.hostname + "/conversations");
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            const conversations = JSON.parse(xhr.responseText);
+            for (const conversation of conversations) {
+              const a = document.createElement('a');
+              a.href = "#";
+              a.innerText = conversation.name;
+              a.dataset.id = conversation.id; // Store the conversation id
+              a.addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent the link from redirecting
+                joinConversation(this.dataset.id); // Call a function to join the conversation
+              });
+              conversationList.appendChild(a);
+            }
+          } else {
+            console.error("Request failed. Status code:", xhr.status);
+          }
+        };
+        xhr.onerror = function() {
+          console.error("Request failed. Network error.");
+        };
+        xhr.send();
+      }
+
+      // Function to join a conversation
+      function joinConversation(id) {
+        // TODO: Implement functionality to join a conversation
+      }
+
+      // Fetch the conversations when the page is loaded
+      fetchConversations();
+
+
+      // Event listeners for the buttons
+      const newConversationButton = document.getElementById("new-conversation");
+      const loadConversationButton = document.getElementById("load-conversation");
+      const loginButton = document.getElementById("login");
+      const settingsButton = document.getElementById("settings");
+
+      newConversationButton.addEventListener("click", function() {
+        // TODO: Implement functionality for starting a new conversation
+      });
+
+      loadConversationButton.addEventListener("click", function() {
+        // TODO: Implement functionality for loading a conversation
+      });
+
+      loginButton.addEventListener("click", function() {
+      // Create login modal
+      const loginModal = document.createElement('div');
+      loginModal.innerHTML = `
+        <div id="login-dialog" style="display: none;">
+          <form id="login-form">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username"><br>
+            <label for="passphrase">Passphrase:</label><br>
+            <input type="text" id="passphrase" name="passphrase"><br>
+            <input type="submit" value="Login">
+          </form>
+        </div>
+      `;
+      document.body.appendChild(loginModal);
+    
+      // Show login modal
+      const loginDialog = document.getElementById("login-dialog");
+      loginDialog.style.display = 'block';
+    
+      const loginForm = document.getElementById("login-form");
+    
+      loginForm.addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+    
+        // Get the user's credentials
+        const username = document.getElementById('username').value;
+        const passphrase = document.getElementById('passphrase').value;
+    
+        // For testing, simply alert the username and passphrase
+        alert(`Username: ${username}\nPassphrase: ${passphrase}`);
+    
+        // TODO: Implement actual login request to the server
+      });
+    });
+ 
+
+      loginButton.addEventListener("click", function() {
+        // TODO: Implement functionality for logging in
+      });
+
+      settingsButton.addEventListener("click", function() {
+        // TODO: Implement functionality for settings
+      });
+    </script>
     <footer>
       <p>Please be aware this is a prototype demonstration of an artificial intelligence system. Use at your own risk - it is not intended to give medical or legal advice. AI systems are known to make up information.</p>
     </footer>
-
+ 
   </body>
 </html>
 
