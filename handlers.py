@@ -11,6 +11,9 @@ def login(req):
     token = str(uuid.uuid4())
     return {'user_id':'', 'token':token}
 
+def bots_available(req):
+    return json.dumps({"bots_available" : ["health data bot", "sobriety coach", "teen social AI bot buddy"]})
+
 def conversations(req):
     user_id = req.get('user_id',"")
    

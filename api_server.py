@@ -35,6 +35,12 @@ def reporting():
     req = request.get_json()
     return {}
 
+@app.route("/bots_available", methods=['POST'])
+def bots_available():
+    # implement this
+    req = request.get_json()
+    return handlers.bots_available(req) 
+
 @app.route("/conversations", methods=['POST'])
 def conversations():
     # implement this

@@ -84,6 +84,15 @@
         box-shadow: 0 9px #999;
       }
 
+      .bot-item {
+          cursor: pointer;
+          padding: 5px;
+          border-bottom: 1px solid #ddd;
+      }
+      .bot-item.highlight {
+          background-color: #ddd;
+      }
+
       .button:hover {background-color: #3e8e41}
 
       .button:active {
@@ -130,11 +139,13 @@
     </div>
 
     <div id="bots-window">
-    <h2>Bots</h2>
-    <ul id="bot-list">
-        <!-- Bots will be listed here -->
-    </ul>
-    </div> 
+        <h2>Bots</h2>
+        <ul id="bot-list">
+            <!-- Bots will be fetched and listed here -->
+	    fetchBots();
+        </ul>
+        <button class="button" id="load-bot" style="float: right;">Load Bot</button>
+    </div>
 
     <form id="input-form">
       <input type="text" id="input-text" placeholder="Type your message here...">
@@ -165,6 +176,38 @@
 
 
     <script>
+
+        function fetchBots() {
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", window.location.protocol + "//" + window.location.hostname + "/bots_available");
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    const botsData = JSON.parse(xhr.responseText);
+                    const botList = document.getElementById("bot-list");
+                    for (const bot of botsData.bots_available) {
+                        const li = document.createElement('li');
+                        li.innerText = bot;
+                        li.className = 'bot-item';
+                        li.addEventListener("click", function() {
+                            document.querySelectorAll('.bot-item').forEach(item => item.classList.remove('highlight'));
+                            this.classList.add('highlight');
+                        });
+                        botList.appendChild(li);
+                    }
+                } else {
+                    console.error("Request failed. Status code:", xhr.status);
+                }
+            };
+            xhr.onerror = function() {
+                console.error("Request failed. Network error.");
+            };
+            xhr.send();
+        }
+
+        // Fetch the bots when the page is loaded
+        fetchBots();
+
       // JavaScript code for the chat window
       // Get references to DOM elements
       const chatWindow = document.getElementById("chat-window");
@@ -331,6 +374,19 @@
       settingsButton.addEventListener("click", function() {
         // TODO: Implement functionality for settings
       });
+
+    const loadBotButton = document.getElementById('load-bot');
+
+    loadBotButton.addEventListener('click', function() {
+        const selectedBotItem = document.querySelector('.bot-item.highlight');
+        if (selectedBotItem) {
+            const selectedBot = selectedBotItem.innerText;
+            // TODO: Implement functionality to load the selected bot
+            console.log('Loading bot:', selectedBot);
+        } else {
+            alert('Please select a bot to load.');
+        }
+    });	    
     </script>
     <footer>
       <p>Please be aware this is a prototype demonstration of an artificial intelligence system. Use at your own risk - it is not intended to give medical or legal advice. AI systems are known to make up information.</p>
